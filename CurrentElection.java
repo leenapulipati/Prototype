@@ -2,13 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+//changing
 public class CurrentElection extends JFrame implements ActionListener{
 
 	JLabel lblElectionName;
 	JLabel lblCommissionerID;
 	JLabel lblCandidates;
 	JButton done;
+	JButton back;
 	HSOInterface election;
 
 	CurrentElection(HSOInterface HSO){
@@ -24,9 +25,18 @@ public class CurrentElection extends JFrame implements ActionListener{
 		JRadioButton radDisqualify = new JRadioButton("Disqualify Voter");
 		JRadioButton radCertify = new JRadioButton("Certify Election");
 		JRadioButton radDisplay = new JRadioButton("Display Election");
-
+		JRadioButton radRemove = new JRadioButton("Remove Election Commissioner");
+		
 		lblElectionName = new JLabel("Election Name:  " + election.getElection());
 		lblCommissionerID = new JLabel("Election Commissioner:  " + election.getCommissioner());
+		
+		back = new JButton("Back to Elections");
+		back.setActionCommand("back");
+		back.addActionListener(this);
+		
+		done = new JButton("Done");
+		done.setActionCommand("done");
+		done.addActionListener(this);
 		
 		radRecount.setActionCommand("Recount");
 		radRecount.addActionListener(this);
@@ -40,11 +50,15 @@ public class CurrentElection extends JFrame implements ActionListener{
 		radDisplay.setActionCommand("Display");
 		radDisplay.addActionListener(this);
 
+		radRemove.setActionCommand("Remove");
+		radRemove.addActionListener(this);
+		
 		pnlRadios.add(radDisqualify);
 		pnlRadios.add(radRecount);
 		pnlRadios.add(radCertify);
 		pnlRadios.add(radDisplay);
-
+		pnlRadios.add(radRemove);
+		
 		/**Set Defaults for main panel | allows enter key | top bar icon**/
 		this.getRootPane().setDefaultButton(done);
 		this.setIconImage(MyImages.codeFather.getImage());
@@ -53,7 +67,10 @@ public class CurrentElection extends JFrame implements ActionListener{
 		this.getContentPane().add(panelMain);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		panelMain.setBackground(MyColors.deepBlue);
-
+		
+		JPanel random = new JPanel();
+		random.add(back);
+		random.add(done);
 		panelElection.add(lblElectionName);
 		panelCommissioner.add(lblCommissionerID);
 		
@@ -63,6 +80,7 @@ public class CurrentElection extends JFrame implements ActionListener{
 						.addComponent(panelCommissioner))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(pnlRadios))
+						.addComponent(random)
 						
 				);
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -72,6 +90,7 @@ public class CurrentElection extends JFrame implements ActionListener{
 						.addComponent(panelCommissioner))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(pnlRadios))
+						.addComponent(random)
 				);
 
 
@@ -86,7 +105,7 @@ public class CurrentElection extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 
 		if(e.getActionCommand().equals("Recount")){
-
+			new RecountGUI();
 		}
 		else if(e.getActionCommand().equals("Certify")){
 
@@ -98,8 +117,18 @@ public class CurrentElection extends JFrame implements ActionListener{
 		}
 
 		else if(e.getActionCommand().equals("Disqualify")){
-
+			new DisqualifyGUI();
 		}
+		else if(e.getActionCommand().equals("Remove")){
+			new RemoveGUI();	
+		}
+		
+		if(e.getActionCommand().equals("back")){
+			election.setVisible(true);
+			this.setVisible(false);	
+		}
+		if(e.getActionCommand().equals("done"))
+			this.setVisible(false);	
 	}
 
 }

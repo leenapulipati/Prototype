@@ -11,11 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Writer;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
 import java.awt.*;
 import javax.swing.*;
 import java.util.Random;
@@ -25,18 +22,18 @@ public class HSOInterface extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	ArrayList<String> contents = new ArrayList<String>();
-	DefaultListModel model = new DefaultListModel();
-	JList list = new JList(model);
+	DefaultListModel<String> model = new DefaultListModel<String>();
+	JList<String> list = new JList<String>(model);
 	DefaultListCellRenderer renderer = (DefaultListCellRenderer)list.getCellRenderer();
-	
-	
+
+
 	ArrayList<String> comm = new ArrayList<String>();
 
 	JPanel panelMain = new JPanel();
 	GroupLayout layout = new GroupLayout(panelMain);
 	JPanel pnlRadios = new JPanel();
 	JPanel pnlList = new JPanel();
-	
+
 	String u;
 	JLabel lWelcome;
 
@@ -56,32 +53,31 @@ public class HSOInterface extends JFrame implements ActionListener{
 	HSOInterface() throws IOException{
 		startServer();
 		lCurrentElections = new JLabel("Or choose a current election");
-		
+
 		renderer.setHorizontalAlignment(JLabel.CENTER);
-		
+
 		String line = null;
 		try{
 			File file = new File("API.txt");
 
 			String users[]; 
 
+		//	@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			while((line = br.readLine()) != null){
 				users = line.split(" ");
 				if(users[0].equals("HSO")){
 					u = users[1];
 				}
-
 			}
 		} catch(FileNotFoundException e){
 			e.printStackTrace();
 		}
 
-
 		lWelcome = new JLabel("Welcome HSO: " + u + "!");
 		lWelcome.setForeground(Color.WHITE);
-		
-		
+
+
 		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 		pnlList.add(lCurrentElections);
 		pnlList.add(Box.createVerticalStrut(20));
@@ -96,6 +92,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 		JRadioButton radNewElection = new JRadioButton("Create New Election");
 
+		pnlList.setMaximumSize(new Dimension(200, 100));
 		radNewElection.setActionCommand("NewElection");
 		radNewElection.addActionListener(this);
 
@@ -109,7 +106,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		pnlRadios.setLayout(new BoxLayout(pnlRadios, BoxLayout.Y_AXIS));
 
 		panelMain.setBackground(MyColors.deepBlue);
-		this.setSize(450,600);
+		this.setSize(450,500);
 		this.setIconImage(MyImages.codeFather.getImage());
 		this.setTitle("HSO Interface");
 		this.getContentPane().add(panelMain);
@@ -126,10 +123,9 @@ public class HSOInterface extends JFrame implements ActionListener{
 						.addComponent(lWelcome))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(pnlRadios)
-				//.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						//.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(pnlList)
 						.addComponent(finish))
-
 				);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -164,7 +160,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 						.addComponent(lWelcome))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(pnlRadios)
-				//.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						//.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(pnlList)
 						.addComponent(finish))
 
@@ -199,6 +195,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent e){
+
 		if(e.getActionCommand().equals("NewElection")){
 
 			/**Have election take in current election**/
@@ -208,7 +205,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		}
 		if(list.getSelectedValue() != null){
 			String selectedE = list.getSelectedValue().toString();
-			
+
 			initializeElection(selectedE);
 			new CurrentElection(this);
 			this.setVisible(false);
@@ -216,10 +213,12 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 		if(e.getActionCommand().equals("finish"))
 			this.setVisible(false);
+
 	}
 
 
-	public void getList(){
+	public void getList()
+	{
 		try {
 			pwOut.writeObject("<getElections>");
 			elections = (Election[])brIn.readObject();
@@ -229,12 +228,14 @@ public class HSOInterface extends JFrame implements ActionListener{
 		}
 	}
 
-	public void initializeList(){
+	public void initializeList()
+	{
 		for(Election e: elections)
 			this.addList(e.election_title);
 	}
 
-	public void initializeElection(String selectedE){
+	public void initializeElection(String selectedE)
+	{
 		try {
 			pwOut.writeObject("<selectedElection>");
 			pwOut.writeObject(selectedE);
@@ -244,7 +245,8 @@ public class HSOInterface extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 	}
-	public void addCommissioner(String id, String eTitle){
+	public void addCommissioner(String id, String eTitle)
+	{
 		char alphabet[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 		String random = new String();
 		int num = 0; 
@@ -255,18 +257,18 @@ public class HSOInterface extends JFrame implements ActionListener{
 		FileWriter fw = null;
 
 		try{
-			File file = new File("C:\\Users\\Catherine\\workspace5\\Prototype\\API.txt");
+			File file = new File("C:\\Users\\Catherine\\workspace5\\PrototypeNew\\API.txt");
 
 			fw = new FileWriter(file.getAbsoluteFile(), true);
 			bw = new BufferedWriter(fw);
-			
+
 			//writes to API as EC username password ElectionName
 			for(int i = 0; i < 10; ++i){
 				num = r.nextInt(alphabet.length);
-				
+
 				random += alphabet[num]; 
 			}
-		
+
 			bw.write("\nEC " + id + " " + random + " " + eTitle);
 			bw.flush();
 		} catch(IOException e){
@@ -290,28 +292,25 @@ public class HSOInterface extends JFrame implements ActionListener{
 		return list.getSelectedValue().toString();	
 	}
 
-		public String getCommissioner(){
-			String line = null;
-			try{
-				File file = new File("API.txt");
+	public String getCommissioner(){
+		String line = null;
+		try{
+			File file = new File("C:\\Users\\Catherine\\workspace5\\PrototypeNew\\API.txt");
 
-				String users[]; 
+			String users[]; 
 
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				while((line = br.readLine()) != null){
-					users = line.split(" ");
-					if(users[3].equals(list.getSelectedValue())){
-						u = users[1];
-					}
-
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while((line = br.readLine()) != null){
+				users = line.split(" ");
+				if(users[3].equals(list.getSelectedValue())){
+					u = users[1];
 				}
-			} catch(IOException e){
-				e.printStackTrace();
 			}
-			
-			return u;
-			//int indexes[] = list.getSelectedIndices();
-		//return commissioner.get(list.getSelectedIndex());	
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+
+		return u;
 	}
 
 
@@ -342,7 +341,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		try {
 			new HSOInterface();
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 	}
