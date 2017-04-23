@@ -12,6 +12,11 @@ public class HSO extends User{
 		
 	}
 
+	
+	HSO(String username, String password){
+		super(username, password);
+	}
+
 	public void UserGUI(User user) {
 		try {
 			new HSOInterface();

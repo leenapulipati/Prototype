@@ -1,9 +1,13 @@
-EC Rnkambara helloworld
-Jjkambara hellokitty
-Dapatrick jessica
-Adentrekin rebekah
-talvarez password0
-HSO lepulipati password1
-cahines password2
-zdelilo password3
-jiblake password4
+Rnkambara helloworld f Sophmore ComputerScience/ComputerEngineering Statler 
+Jjkambara hellokitty f Freshman English/History Eberly 
+Dapatrick jessica m Freshman English Everly 
+Adentrekin rebekah m Graduate ComputerScience Statler 
+talvarez password0 f Sophmore ComputerScience Statler 
+HSO cahines password12 HSO 
+lepulipati password1 f Graduate ComputerScience Statler 
+ecahines password2 f Senior ComputerScience/ComputerEngineering Statler 
+zdelilo password3 f Junior ComputerScience Statler 
+jiblake password4 f Sophmore ComputerScience Statler 
+EC zdelilo EZcU5D6gxD Election2 
+EC zdelilo 9J3u3QvOTa e1 
+EC zdelilo kk32PCCbf2 ss
