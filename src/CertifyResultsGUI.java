@@ -101,13 +101,25 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	 }
 	 public void actionPerformed(ActionEvent e) 
 		{	
-			if(e.getActionCommand().equals("certify"))	
-				{	this.setVisible(false);	}
+		if(e.getActionCommand().equals("certify"))	
+			{	
+			this.setVisible(false);	
+			certifyElection();
+			}
 		}
 	 
 	/**<<SERVER CONNECTION>> <certify>
 	 * Retrieves and initializes array of users from server**/
-	public void certify()
+	
+	 public void certifyElection()
+	 {
+		 try 
+			{
+				pwOut.writeObject("<certifyElection>");
+			} 
+			catch (IOException e) {	e.printStackTrace();	}
+	 }
+	 public void certify()
 	{
 		try 
 		{

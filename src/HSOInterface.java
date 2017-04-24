@@ -252,7 +252,6 @@ public class HSOInterface extends JFrame implements ActionListener{
 		int num = 0; 
 		Random r = new Random();
 
-
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 
@@ -312,8 +311,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 			}
 			
 			return u;
-			//int indexes[] = list.getSelectedIndices();
-		//return commissioner.get(list.getSelectedIndex());	
+
 	}
 
 
@@ -325,7 +323,8 @@ public class HSOInterface extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 	}
-	public void startServer(){
+	public void startServer()
+	{
 		/**Initialzies Server**/
 		try {
 			sock = new Socket("127.0.0.1",50000);

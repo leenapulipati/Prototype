@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class CurrentElection extends JFrame implements ActionListener{
 
@@ -25,7 +26,8 @@ public class CurrentElection extends JFrame implements ActionListener{
 		JRadioButton radDisqualify = new JRadioButton("Disqualify Voter");
 		JRadioButton radCertify = new JRadioButton("Certify Election");
 		JRadioButton radDisplay = new JRadioButton("Display Election");
-
+		JRadioButton radRemove = new JRadioButton("Remove Election Commissioner");
+		
 		lblElectionName = new JLabel("Election Name:  " + election.getElection());
 		lblCommissionerID = new JLabel("Election Commissioner:  " + election.getCommissioner());
 		
@@ -48,11 +50,15 @@ public class CurrentElection extends JFrame implements ActionListener{
 
 		radDisplay.setActionCommand("Display");
 		radDisplay.addActionListener(this);
+		
+		radRemove.setActionCommand("Remove");
+		radRemove.addActionListener(this);
 
 		pnlRadios.add(radDisqualify);
 		pnlRadios.add(radRecount);
 		pnlRadios.add(radCertify);
 		pnlRadios.add(radDisplay);
+		pnlRadios.add(radRemove);
 
 		/**Set Defaults for main panel | allows enter key | top bar icon**/
 		this.getRootPane().setDefaultButton(done);
@@ -113,13 +119,20 @@ public class CurrentElection extends JFrame implements ActionListener{
 		else if(e.getActionCommand().equals("Disqualify")){
 			new DisqualifyGUI();
 		}
-		
+		else if(e.getActionCommand().equals("Remove")){
+			new RemoveGUI();	
+		}
 		if(e.getActionCommand().equals("back")){
 			election.setVisible(true);
 			this.setVisible(false);	
 		}
 		if(e.getActionCommand().equals("done"))
+		{
 			this.setVisible(false);	
+			election.shutdown();
+		}
+		
 	}
+	
 
 }

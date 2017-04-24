@@ -1,4 +1,4 @@
-import java.io.FileInputStream;  
+import java.io.FileInputStream;   
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,18 +7,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class MyVoteServer extends Thread  {
 
-	
 	static HashMap<String, Election> elections;
 	static Election election;
 	static HashMap<String, User> users;
 	String selectedE;
-
-   
+  
 	ServerSocket ss;
 	
 	/** MyVoteServer Constructor
@@ -68,7 +67,7 @@ public class MyVoteServer extends Thread  {
 	 * @param username | Name of user to check in voter list |
 	 * @return         |true user has voted | false use hasn't voted |*/
 	public boolean voted(String username){
-		return election.votedUsers.containsKey(username);
+		return election.votes.votedUsers.containsKey(username);
 	}
 	
 	/**Takes in a user and returns the user from the user list
@@ -85,21 +84,39 @@ public class MyVoteServer extends Thread  {
 	
 	/** @return users in api**/
 	public User[] getVotedUsers(){
-		return  election.votedUsers.values().toArray(new User[0]);
+		return  election.votes.votedUsers.values().toArray(new User[0]);
 	}
 	
 	public HashMap<String, List<Candidate>> getVotes(){
-		return election.votes;
+		return election.votes.votes;
+	}
+	
+	public Date getStart(){
+		return election.pollStartDay;
+	}
+	
+	public Date getEnd(){
+		return election.pollEndDay;
 	}
 	
 	public HashMap<String, List<Candidate>> getRecount(){
-		return election.votes;
+		return election.votes.votes;
 	}
 	
 	/**@return hashmap containing the summary statisitcs */
 	public HashMap<String, Integer> getStatistics()
 	{
-		return election.summaryStatistcs;
+		return election.votes.summaryStatistcs;
+	}
+	
+	public ArrayList<Boolean> getMultiVoteSelections()
+	{	
+		return election.votes.raceVoteSelection;
+	}
+	
+	public Object getCertification() 
+	{
+		return election.certified;
 	}
 	
 	/**@return boolean | true election is up | false no elections up | */
@@ -107,6 +124,11 @@ public class MyVoteServer extends Thread  {
 		return !elections.isEmpty();
 	}
 	
+	public void certifyElection()
+	{
+		election.certified = true;	
+		backup();
+	}
 	/**Takes in the name of an election assigns the attribute election to the selected election
 	 * @param selected - Name of the election to select
 	 * @return the election selected */
@@ -128,10 +150,11 @@ public class MyVoteServer extends Thread  {
 	 * adds races to the HashMap which keeps track of votes
 	 * votes is a hashmap with key [race = {list of candidates}]
 	 * candidates has | candidate name | vote tallies |**/
-	public void addRace(RacePanel race) 
+	public void addRace(RacePanel race, boolean mv) 
 	{
 		System.out.println("selectedElection " + election);
-		election.votes.put(race.race_title, race.candidates);
+		election.votes.votes.put(race.race_title, race.candidates);
+		election.votes.raceVoteSelection.add(mv);
 		System.out.println(elections);
 		backup();
 	}
@@ -146,20 +169,20 @@ public class MyVoteServer extends Thread  {
 	 * NOTE >>> Backs up server with each vote (testing purposes)**/
 	public void addVote(String race, int selected, String votedUser, String ID)
 	{
-		Candidate SelectedCandidate = election.votes.get(race.trim()).get(selected);
+		Candidate SelectedCandidate = election.votes.votes.get(race.trim()).get(selected);
 				  SelectedCandidate.incramentTally();
-		election.votedUsers.put(votedUser, users.get(votedUser));
-		election.IDStatistics.put(ID, users.get(votedUser).dataSet());
+		election.votes.votedUsers.put(votedUser, users.get(votedUser));
+		election.votes.IDStatistics.put(ID, users.get(votedUser).dataSet());
 		
-		if(election.voterIDs.containsKey(ID))
-			election.voterIDs.get(ID).add(SelectedCandidate);
+		if(election.votes.voterIDs.containsKey(ID))
+			election.votes.voterIDs.get(ID).add(SelectedCandidate);
 		else
 		{
 			List<Candidate> c = new ArrayList<Candidate>(); c.add(SelectedCandidate);
-			election.voterIDs.put(ID, c);
+			election.votes.voterIDs.put(ID, c);
 		}
-		System.out.println(election.voterIDs);
-		System.out.println(election.votes);
+		System.out.println(election.votes.voterIDs);
+		System.out.println(election.votes.votes);
 		backup();
 	}
 	
@@ -167,7 +190,7 @@ public class MyVoteServer extends Thread  {
 	/** Takes in Vote ID and removes ALL ID's vote from election
 	 * @param ID | Voter ID |*/
 	public void removeIDStatistics(String ID){
-		String[] removeID = election.IDStatistics.get(ID);
+		String[] removeID = election.votes.IDStatistics.get(ID);
 		
 		for(String data: removeID)
 			updateSummaryStatistics(data, false);
@@ -183,14 +206,14 @@ public class MyVoteServer extends Thread  {
 	public String removeVote(String ID)
 	{
 		String result = "";
-		System.out.println(election.voterIDs);
-		if(election.voterIDs.containsKey(ID)){
+		System.out.println(election.votes.voterIDs);
+		if(election.votes.voterIDs.containsKey(ID)){
 			
-			List<Candidate> removeCandidates = election.voterIDs.get(ID);
+			List<Candidate> removeCandidates = election.votes.voterIDs.get(ID);
 			
 			for(Candidate c: removeCandidates)
 			{
-				Candidate.getCandidate(election.votes.get(c.race), c.name).decrementTally();
+				Candidate.getCandidate(election.votes.votes.get(c.race), c.name).decrementTally();
 				result+= "Disqualified: " + c.name + "\n";
 			}
 			removeIDStatistics(ID);
@@ -205,17 +228,17 @@ public class MyVoteServer extends Thread  {
 	 * @param data - statistic to be incremented*/
 	public void updateSummaryStatistics(String data, boolean add)
 	{
-		if(election.summaryStatistcs != null && election.summaryStatistcs.containsKey(data))
+		if(election.votes.summaryStatistcs != null && election.votes.summaryStatistcs.containsKey(data))
 		{
-			int value = election.summaryStatistcs.get(data.trim()).intValue();
+			int value = election.votes.summaryStatistcs.get(data.trim()).intValue();
 			
 			if(add == true)	
-				election.summaryStatistcs.put(data.trim(), value+1);
+				election.votes.summaryStatistcs.put(data.trim(), value+1);
 			else 
-				election.summaryStatistcs.put(data.trim(), value-1);
+				election.votes.summaryStatistcs.put(data.trim(), value-1);
 		}
-		else election.summaryStatistcs.put(data, 1);
-		System.out.println(election.summaryStatistcs);
+		else election.votes.summaryStatistcs.put(data, 1);
+		System.out.println(election.votes.summaryStatistcs);
 		backup();
 	}
 	
@@ -277,6 +300,8 @@ public class MyVoteServer extends Thread  {
 		resetElection();
 		restore();
 	}
+
+
 	
 	
 }

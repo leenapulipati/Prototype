@@ -1,5 +1,6 @@
 import java.awt.Color;       
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,6 +31,10 @@ public class Ballot extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
+		/**MultiVote Attributes**/
+		boolean multivote;
+		ArrayList<Boolean> mPref = new ArrayList<>();
+	
 		JButton confirm; 
 		JButton finish;
         /**Layout and ButtonGroup Components**/
@@ -38,7 +44,8 @@ public class Ballot extends JFrame implements ActionListener{
         User user;
         
         /**Collections**/
-        ArrayList<ButtonGroup> selectedCandidates = new ArrayList<ButtonGroup>();
+        ArrayList<ButtonGroup> selectedCandidate = new ArrayList<ButtonGroup>();
+    	ArrayList <JCheckBox> selectedCandidates = new ArrayList<>();
         ArrayList<RacePanel> panels = new ArrayList<RacePanel>();
         
         /**Server Stuff**/
@@ -87,19 +94,27 @@ public class Ballot extends JFrame implements ActionListener{
 	     * retrieves all ballot information from RacePanel
 	     * 		| race_title | candidates |
 	     */
-	    public void addBallot(RacePanel p, boolean save) {
+	    public void addBallot(RacePanel p, boolean save, boolean multivote) {
 	    	
 	       /**Panels - used to compartmentalize neccessary ballot componets
 	    	* race and candidates**/
-	    	panels.add(p);
+	    	
+	    	/**Check for multiVote - | true - multivote selected | false not selected |**/
+			mPref.add(multivote);
+			this.multivote = multivote;
+	    	
+
 	    	/**Saves race and candidates to server**/
-	    	addRace(p);
+	    	panels.add(p);
+	    	addRace(p, multivote);
 	    	
 	    	JPanel race = new JPanel();
 	    	race.setBackground(MyColors.seaGreen);
 	    	race.setBorder(new LineBorder(Color.white,3));
 		    race.add(new JLabel(p.race_title));
 		    
+		    if(!multivote)
+		    {
 		    ButtonGroup btnRadioGroup = new ButtonGroup();
 	    	int num_candidates  = p.candidates.size();
 
@@ -125,7 +140,10 @@ public class Ballot extends JFrame implements ActionListener{
 		   	 	                    .addComponent(race)
 		   	 	                    );      
 	    	   }
-	    	   selectedCandidates.add(btnRadioGroup);
+	    	   selectedCandidate.add(btnRadioGroup);
+		    }
+		    else
+		    {addMultiVote(p, race);}
 	    }
 	    
 	    
@@ -161,10 +179,21 @@ public class Ballot extends JFrame implements ActionListener{
 	    		JFrame frame = new JFrame();
 	    		JOptionPane.showMessageDialog(frame, "Voter ID: "+ ID,"Very important voter certificate ID... Thing...",
 	    									JOptionPane.PLAIN_MESSAGE,MyImages.codeFather);
-		    	for(int i = 0; i < panels.size();i++){
-		    		
+	    		String selectedC = null;
+		    	for(int i = 0; i < panels.size();i++)
+		    	{
 		    		String race = panels.get(i).race_title;
-		    		String selectedC = selectedCandidates.get(i).getSelection().getActionCommand();
+		    		
+		    		if(!mPref.get(i))
+		    		 selectedC = selectedCandidate.get(i).getSelection().getActionCommand();
+		    		
+		    		else/**Loop to retrieve all Votes**/
+		    		{
+		    			for(int j = 0; j < selectedCandidates.size(); j++)
+		    			{
+							selectedC = selectedCandidates.get(i).getActionCommand();
+						}
+		    		}
 		    		int selectedIndex = panels.get(i).names.indexOf(selectedC);
 		   	 	    addVotes(race, selectedIndex, ID);
 		    		System.out.println(race + " " + selectedC);
@@ -173,6 +202,32 @@ public class Ballot extends JFrame implements ActionListener{
 		    	updateSummaryStatistics(user);
 	    	}
 	    }
+	    
+	    public void addMultiVote(RacePanel p, JPanel race)
+		{
+			ArrayList <JCheckBox> checkGroup = new ArrayList<>();
+			
+			int num_candidates = p.candidates.size();
+
+			/** Loop goes through and creates ballot panels with all candidates **/
+			for (int i = 0; i < num_candidates; i++) {
+
+				JCheckBox cand = new JCheckBox(p.candidates.get(i).getName());
+				cand.setText(p.candidates.get(i).getName());
+				cand.setVisible(true);
+				cand.setActionCommand(p.candidates.get(i).getName());
+				cand.setBackground(Color.white);
+				selectedCandidates.add(cand);
+				race.setLayout(new FlowLayout());
+				race.add(cand);
+
+				/** Adds components to main layout **/
+				layout.setHorizontalGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(race)));
+				layout.setVerticalGroup(
+						layout.createParallelGroup().addGroup(layout.createSequentialGroup()).addComponent(race));
+			}
+		}
 	    
 	   /**Initializes server components*/
 	    public void startServer()
@@ -196,6 +251,7 @@ public class Ballot extends JFrame implements ActionListener{
 					e1.printStackTrace();
 				}
 		   }
+	    
 	    /** <<<SERVER CONNECTOIN  <updateSummary>
 	     *  Takes in a Voter's ID | sends ID to server | updates summary statistics |
 	     *  @param ID - ID for voter*/
@@ -250,11 +306,12 @@ public class Ballot extends JFrame implements ActionListener{
      	  * sends <addRace> command to server
      	  * ultimate goald | update the candidates voting array |
      	  * **/
-	    public void addRace(RacePanel p){
+	    public void addRace(RacePanel p, boolean mv){
 	    	 
 	    	try {
 		 	    	pwOut.writeObject("<addRace>");
 		 	    	pwOut.writeObject(p);
+		 	    	pwOut.writeObject(mv);
 		 	    	
 				} catch (IOException j) 
 	    		{

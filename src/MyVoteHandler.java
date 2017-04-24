@@ -54,16 +54,29 @@ public class MyVoteHandler extends Thread {
 			
 			case "<addRace>":
 				 RacePanel races =  (RacePanel) brIn.readObject();
-				 server.addRace(races);
+				 boolean multivote = (boolean) brIn.readObject();
+				server.addRace(races, multivote);
 			break;
 			
 			case "<shutdown>":
 				die();
 			break;
 			
+			case "<Start>":
+				
+				pwOut.writeObject(server.getStart());
+			
+				break;
+				
+			case "<End>":
+				
+				pwOut.writeObject(server.getEnd());
+				
+			break;
+			
 			case "<getVotes>":
 				pwOut.writeObject(server.getVotes());
-				pwOut.writeObject(server.getRecount());
+				pwOut.writeObject(server.getMultiVoteSelections());
 			break;
 			
 			case "<getRecount>":
@@ -78,6 +91,14 @@ public class MyVoteHandler extends Thread {
 			
 			case "<certify>":
 				pwOut.writeObject(server.getVotedUsers());
+			break;
+			
+			case "<certifyElection>":
+				server.certifyElection();
+			break;
+			
+			case "<checkCertification>":
+				pwOut.writeObject(server.getCertification());
 			break;
 			
 			case"<electionUp>":

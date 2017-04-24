@@ -128,8 +128,7 @@ public class Login extends JFrame implements ActionListener{
 		this.setSize(430,300);
         this.setVisible(true);  
         this.setIconImage(MyImages.codeFather.getImage());
-        this.getRootPane().setDefaultButton(login);
-        
+        this.getRootPane().setDefaultButton(login);    
 	}
 		
 	/**

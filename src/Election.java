@@ -1,26 +1,24 @@
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class Election  implements java.io.Serializable{
 
 	private static final long serialVersionUID = 1L;
-
-	String election_title;
-	 
-	 HashMap<String, User> votedUsers;			/**UserName -> User**/
-	 HashMap<String, String[]> IDStatistics;    /**VoterID -> Statistics**/   
-	 HashMap<String, List<Candidate>> voterIDs; /**VoterIDs -> Candidates**/ 
-	 HashMap<String, List<Candidate>> votes;	/**Race -> Candidates**/
-	 HashMap<String, Integer> summaryStatistcs; /**UserName -> SummaryStatistics**/
 	
-	public Election(String title)
+	 String election_title;
+	 Date pollStartDay;
+	 Date pollEndDay;
+	 Votes votes;
+	 boolean certified;
+	public Election(String title, Date start, Date end)
 	{
+		pollStartDay = start;
+		pollEndDay = end;
 		election_title = title;
-		votedUsers = new  HashMap<String, User>();
-		votes = new HashMap<String, List<Candidate>>();
-		voterIDs = new HashMap<String, List<Candidate>>();
-		summaryStatistcs= new HashMap<String, Integer>();
-		IDStatistics = new HashMap<String, String[]>();
+		certified = false;
+		votes = new Votes();
+
 	}
 	
 	public String toString()

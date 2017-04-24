@@ -36,6 +36,13 @@ public abstract class User implements java.io.Serializable{
 			this.electionName = electionName;
 
 		}
+	
+	User(String username, String password){
+		
+		this.username = username;
+		this.password = password;
+	}
+	
 	public String[] dataSet(){
 		String[] data = new String[4];
 		data[0] = gender;

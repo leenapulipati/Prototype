@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 public class StudentBallot{
 
 	Ballot b;
+	ArrayList<Boolean> mv;
+	boolean multivote = false;
 	HashMap<String, List<Candidate>> lp;
 	
 	/**Server Stuff**/
@@ -27,15 +29,17 @@ public class StudentBallot{
 		
 	     b = new Ballot(user);
 		 b.setVisible(false);
-		 lp = new HashMap<String, List<Candidate>>(); getPanels();
+		 lp = new HashMap<String, List<Candidate>>(); 
+		 getPanels();
 		 
 		 String[] races = lp.keySet().toArray(new String[0]);
 		 List<Candidate>[] winners = lp.values().toArray(new List[0]);
 		
 		
-		 for(int i = 0; i < races.length;i++){
+		 for(int i = 0; i < races.length;i++)
+		 {
 	    	 RacePanel p = new RacePanel( races[i], winners[i]);
-			 b.addBallot(p, false);
+			 b.addBallot(p, false, mv.get(i));
 		 }
 		 
 		 b.finishBallot(false);
@@ -43,11 +47,13 @@ public class StudentBallot{
 
 		 }
 	
-	public void getPanels(){
-		
-		try {
+	public void getPanels()
+	{
+		try 
+		{
 			pwOut.writeObject("<getVotes>");
 			lp = ( HashMap<String, List<Candidate>>)brIn.readObject();
+			mv = (ArrayList<Boolean>) brIn.readObject(); 
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
