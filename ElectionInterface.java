@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -35,7 +36,7 @@ public class ElectionInterface extends JFrame implements ActionListener {
 	GroupLayout layout = new GroupLayout(panelMain);
 	JButton confirm;
 	JButton exit;
-	JLabel votedError;
+	JLabel votedError, pollingError;
 	User user;
 
 	/** Server Stuff **/
@@ -58,6 +59,10 @@ public class ElectionInterface extends JFrame implements ActionListener {
 		votedError.setText("Oops! Seems as if you've already voted!");
 		votedError.setIcon(MyImages.yellowFrown);
 		votedError.setVisible(false);
+		
+		pollingError = new JLabel();
+		pollingError.setIcon(MyImages.yellowFrown);
+		pollingError.setVisible(false);
 
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setVisibleRowCount(4);
@@ -69,6 +74,7 @@ public class ElectionInterface extends JFrame implements ActionListener {
 		pnlList.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 
+		
 		getElections();
 		for (Election e : elections) {
 			this.addElection(e.election_title);
@@ -101,30 +107,32 @@ public class ElectionInterface extends JFrame implements ActionListener {
 		if (e.getActionCommand().equals("confirm") && !list.isSelectionEmpty()) {
 			String selectedE = list.getSelectedValue().toString();
 			Election selected = null;
-			boolean pollOpen = false;
 			
 			for(int i = 0; i < elections.length; i++){
 				if(selectedE.equals(elections[i].election_title)) selected = elections[i];
 				System.out.println(elections[i].pollStartDay);
 			}
 			
-			pollOpen = today.after(selected.pollStartDay);
-			
 			try {
 				pwOut.writeObject("<selectedElection>");
 				pwOut.writeObject(selectedE);
 
-				if (!hasVoted(user.username) && pollOpen ) {
+				if (!hasVoted(user.username) && pollsOpen()) {
 					user.UserGUI(user);
 					this.setVisible(false);
 				}
-
 				else {/** Displays error message if user has voted **/
-					votedError.setVisible(true);
+					votedError.setVisible(pollsOpen());
+					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					
+					pollingError.setText("Oops! The polls are not open! Polls are active for this election between " + 
+							sdf.format(getStart()) + " at " + "7:00am" + " and ends at midnight " + sdf.format(getEnd()));
+					
+					pollingError.setVisible(!pollsOpen());
 				}
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 		}
 		/** User selects exit button | program exits | **/
 		if (e.getActionCommand().equals("exit"))
@@ -137,6 +145,46 @@ public class ElectionInterface extends JFrame implements ActionListener {
 	 * @param eName
 	 *            - name of election
 	 */
+	
+	public boolean pollsOpen(){
+		
+		return (getEnd().after(today) && getStart().before(today));
+		
+	}
+	
+	public Date getEnd(){
+		Date pickle = null;
+			
+			try {
+				pwOut.writeObject("<End>");
+				pickle = (Date) brIn.readObject();
+			} catch (Exception e) {
+				
+				System.err.println(e.getMessage());
+		
+			}
+			
+			return pickle;
+			
+		}
+	
+	public Date getStart(){
+	Date duck = null;
+		
+		try {
+			pwOut.writeObject("<Start>");
+			duck = (Date) brIn.readObject();
+		} catch (Exception e) {
+			
+			System.err.println(e.getMessage());
+	
+		}
+		
+		return duck;
+		
+	}
+	
+	
 	public void addElection(String eName) {
 		model.addElement(eName);
 
