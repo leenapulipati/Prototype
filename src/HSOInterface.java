@@ -302,9 +302,12 @@ public class HSOInterface extends JFrame implements ActionListener{
 				String users[]; 
 
 				BufferedReader br = new BufferedReader(new FileReader(file));
+				
 				while((line = br.readLine()) != null){
 					users = line.split(" ");
-					if(users[3].equals(list.getSelectedValue())){
+				if(users[0].trim().equals("EC"))
+					if(users[3].trim().equals(list.getSelectedValue().trim()))
+					{
 						u = users[1];
 					}
 

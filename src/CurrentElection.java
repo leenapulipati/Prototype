@@ -64,7 +64,7 @@ public class CurrentElection extends JFrame implements ActionListener{
 		this.getRootPane().setDefaultButton(done);
 		this.setIconImage(MyImages.codeFather.getImage());
 		this.setTitle("Current Election");
-		this.setSize(450, 200);
+		this.setSize(500, 230);
 		this.getContentPane().add(panelMain);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		panelMain.setBackground(MyColors.deepBlue);

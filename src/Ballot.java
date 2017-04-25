@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -22,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
@@ -38,7 +40,7 @@ public class Ballot extends JFrame implements ActionListener{
 		boolean multivote;
 		ArrayList<Boolean> mPref = new ArrayList<>();
 		
-		
+		JPanel racep = new JPanel();
 		/**Writein Attributes**/
 		boolean writein;
 		JTextField txtWriteIn;
@@ -84,7 +86,7 @@ public class Ballot extends JFrame implements ActionListener{
 	    	
 	    	/**Default values for Main Panel | Color | Size | Icon | Title | **/
 	        panelMain.setBackground(MyColors.deepBlue);
-	        this.setSize(500,300);
+	        this.setSize(620,300);
 	        this.setIconImage(MyImages.codeFather.getImage());
 	        this.setTitle("MyVote");
 	        this.getContentPane().add(panelMain);
@@ -136,7 +138,7 @@ public class Ballot extends JFrame implements ActionListener{
 		    {
 		    ButtonGroup btnRadioGroup = new ButtonGroup();
 	    	int num_candidates  = p.candidates.size();
-
+	    	
 		    	/**Loop goes through and creates ballot panels with all candidates**/
 		      	for(int i = 0; i < num_candidates;i++)
 		      	{
@@ -152,15 +154,17 @@ public class Ballot extends JFrame implements ActionListener{
 		    		   race.add(txtWriteIn);
 		    		   writeInBoxes.put(p.race_title, txtWriteIn);
 		    		   
+		    		   racep.setLayout(new BoxLayout(racep, BoxLayout.Y_AXIS));
+		    		   racep.add(race);
 		    		   /**Addds components to main layout**/
 		    		   layout.setHorizontalGroup(layout.createSequentialGroup()
 			        			  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			        					  .addComponent(race)
+			        					  .addComponent(racep)
 			        					  ));
 			   	 	    layout.setVerticalGroup(
 			   	 	            layout.createParallelGroup()
 			   	 	                .addGroup(layout.createSequentialGroup())
-			   	 	                    .addComponent(race)
+			   	 	                    .addComponent(racep)
 			   	 	                    );      
 			   	 	
 		      		}
@@ -203,7 +207,10 @@ public class Ballot extends JFrame implements ActionListener{
 	    	{
 	    		String  ID = (UUID.randomUUID().toString().substring(0,7));
 	    		JFrame frame = new JFrame();
-	    		JOptionPane.showMessageDialog(frame, "Voter ID: "+ ID,"Very important voter certificate ID... Thing...",
+	    		JTextArea message = new JTextArea();
+	    		message.setText("Voter ID: "+ ID);
+	    		message.setEnabled(false);
+	    		JOptionPane.showMessageDialog(frame,message ,"Very important voter certificate ID... Thing...",
 	    									JOptionPane.PLAIN_MESSAGE,MyImages.codeFather);
 	    		String selectedC = "Default";
 		    	for(int i = 0; i < panels.size();i++)
@@ -230,7 +237,6 @@ public class Ballot extends JFrame implements ActionListener{
 		    				if(selectedCandidates.get(i).isSelected())
 		    				{
 			    				selectedC = selectedCandidates.get(i).getActionCommand();
-			    				System.out.println("Multiple: " + selectedC);
 			    				Candidate c = new Candidate(selectedC,race);
 					   	 	    addVotes(race, c, ID);
 		    				}
@@ -238,7 +244,6 @@ public class Ballot extends JFrame implements ActionListener{
 		    		}
 		    		Candidate c = new Candidate(selectedC,race);
 		   	 	    addVotes(race, c, ID);
-		    		System.out.println("Race Results: " + race + " " + selectedC);
 		    	}
 		    	updateSummaryStatistics(user);
 	    	}
@@ -246,8 +251,6 @@ public class Ballot extends JFrame implements ActionListener{
 	    
 	    public void addMultiVote(RacePanel p, JPanel race)
 		{
-			ArrayList <JCheckBox> checkGroup = new ArrayList<>();
-			
 			int num_candidates = p.candidates.size();
 
 			/** Loop goes through and creates ballot panels with all candidates **/
@@ -262,12 +265,12 @@ public class Ballot extends JFrame implements ActionListener{
 				race.setLayout(new FlowLayout());
 				race.add(cand);
 				race.add(txtWriteIn);
-
+				racep.add(race);
 				/** Adds components to main layout **/
 				layout.setHorizontalGroup(layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(race)));
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(racep)));
 				layout.setVerticalGroup(
-						layout.createParallelGroup().addGroup(layout.createSequentialGroup()).addComponent(race));
+						layout.createParallelGroup().addGroup(layout.createSequentialGroup()).addComponent(racep));
 			}
 		}
 	  

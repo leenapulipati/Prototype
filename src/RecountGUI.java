@@ -107,7 +107,7 @@ public class RecountGUI extends JFrame implements ActionListener{
 		 this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  
          this.setIconImage(MyImages.codeFather.getImage());
          this.setTitle("Recount Results");
-         this.setSize(600, 400);
+         this.setSize(700, 400);
          
          /**Centers GUI onto Screen**/
          Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

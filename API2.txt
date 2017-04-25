@@ -8,4 +8,6 @@ cahines password2 f Senior ComputerScience/ComputerEngineering Statler
 zdelilo password3 f Junior ComputerScience Statler 
 jiblake password4 m Sophmore ComputerScience Statler 
 EC fresh ZDh6LavMA6 random 
-EC Thomas 4RvbqfyHr8 writein
+EC Edison zYnBRfLoHk writein 
+EC checker wVo7x53cno electioncHECK 
+EC John OXRSDl40Hu CandyEC Paig cc1LMTJfss PollingEnded 

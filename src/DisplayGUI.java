@@ -92,7 +92,7 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		 this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  
          this.setIconImage(MyImages.codeFather.getImage());
          this.setTitle("Winners!");
-         this.setSize(430, 270);
+         this.setSize(430, 330);
          
          /**Centers GUI onto Screen**/
          Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

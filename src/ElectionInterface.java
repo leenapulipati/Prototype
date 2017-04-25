@@ -131,9 +131,8 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				pwOut.writeObject("<selectedElection>");
 				pwOut.writeObject(selectedE);
 				
-				if(user instanceof ElectionCommissioner)
-				user.UserGUI(user);
-				else
+				
+				
 				if(pollsEnded())
 				{
 					if(certified())
@@ -144,7 +143,11 @@ public class ElectionInterface extends JFrame implements ActionListener{
 					else
 					{certificationError.setVisible(true);}	
 				}
-				
+				else
+				if(user instanceof ElectionCommissioner){
+					user.UserGUI(user);
+					this.setVisible(false);
+					}
 				else if
 				(!hasVoted(user.username) && pollsOpen())
 				{
