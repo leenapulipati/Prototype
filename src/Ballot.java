@@ -209,7 +209,6 @@ public class Ballot extends JFrame implements ActionListener{
 	    		JFrame frame = new JFrame();
 	    		JTextArea message = new JTextArea();
 	    		message.setText("Voter ID: "+ ID);
-	    		message.setEnabled(false);
 	    		JOptionPane.showMessageDialog(frame,message ,"Very important voter certificate ID... Thing...",
 	    									JOptionPane.PLAIN_MESSAGE,MyImages.codeFather);
 	    		String selectedC = "Default";

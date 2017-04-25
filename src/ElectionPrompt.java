@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 public class ElectionPrompt extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +26,13 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 	HSOInterface election;
 	PollingTimes startDay;
 	PollingTimes endDay;
+	String hours [] = new String [24];
+	String minutes [] = new String [60];
+	JComboBox hstartTime;
+	JComboBox hendTime;
+	JComboBox mstartTime;
+	JComboBox mendTime;
+	Date today = new Date();
 	
 	ElectionInterface eInterface = new ElectionInterface(null);
 	
@@ -34,12 +42,30 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 		startServer();
 		/**Assign election to HSO interface**/
 		election = HSO;
+		
+
+		for(int i = 0; i < hours.length; i++){
+			hours [i] = ""+i;
+		}
+		for(int i = 0; i < minutes.length; i++){
+			minutes [i] = ""+i;
+		}
+		
+		hstartTime = new JComboBox(hours);
+		mstartTime = new JComboBox(minutes);
+		hendTime = new JComboBox(hours);
+		mendTime = new JComboBox(minutes);
+		hstartTime.setSelectedIndex(7);
+		hendTime.setSelectedIndex(23);
+		mendTime.setSelectedIndex(59);
+		
 
 			JPanel panelMain = new JPanel();
 			GroupLayout layout = new GroupLayout(panelMain);
 			JPanel panelSub = new JPanel();
 			JPanel panelSub1 = new JPanel();
 			JPanel panelSub2 = new JPanel();
+			JPanel panelSub3 = new JPanel();
 			startDay = new PollingTimes();
 			endDay = new PollingTimes();
 			
@@ -47,6 +73,8 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 			lblCommissionerID = new JLabel("Election Commissioner ID:  ");
 			lblPollBeginDay = new JLabel("Date Polls Open:  ");
 			lblPollEndDay = new JLabel("Date Polls Close:  ");
+			JLabel lblPollBeginTime = new JLabel("Time Polls Open:  ");
+			JLabel lblPollEndTime = new JLabel("Time Polls Close:  ");
 			
 			txtElectionName = new JTextField(20);
 			txtCommissionerID = new JTextField(20);
@@ -71,15 +99,23 @@ public class ElectionPrompt extends JFrame implements ActionListener{
         panelSub1.add(txtCommissionerID);
         
         panelSub2.add(lblPollBeginDay);
-		panelSub2.add(startDay);
-		panelSub2.add(lblPollEndDay);
-		panelSub2.add(endDay);
+			panelSub2.add(startDay);
+			panelSub2.add(lblPollEndDay);
+			panelSub2.add(endDay);
+			
+			panelSub3.add(lblPollBeginTime);
+			panelSub3.add(hstartTime);
+			panelSub3.add(mstartTime);
+			panelSub3.add(lblPollEndTime);
+			panelSub3.add(hendTime);
+			panelSub3.add(mendTime);
         
         layout.setHorizontalGroup(layout.createSequentialGroup()
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
         				.addComponent(panelSub)
         				.addComponent(panelSub1)
         				.addComponent(panelSub2)
+        				.addComponent(panelSub3)
         				.addComponent(confirm))
         		);
         
@@ -88,6 +124,7 @@ public class ElectionPrompt extends JFrame implements ActionListener{
         				.addComponent(panelSub)
         				.addComponent(panelSub1)
         				.addComponent(panelSub2)
+        				.addComponent(panelSub3)
         				.addComponent(confirm))
         		);
         
@@ -111,24 +148,39 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 			endDay.actionPerformed(e);
 			
 			//default start time is 7am on the start day and end time is 12am on the end day
-			startDay.day.setHours(7);
-			startDay.day.setMinutes(0);
+			startDay.day.setHours(hstartTime.getSelectedIndex());
+			startDay.day.setMinutes(mstartTime.getSelectedIndex());
 			startDay.day.setSeconds(0);
-			endDay.day.setHours(0);
-			endDay.day.setMinutes(0);
+			endDay.day.setHours(hendTime.getSelectedIndex());
+			endDay.day.setMinutes(mendTime.getSelectedIndex());
 			endDay.day.setSeconds(0);
 			
+			System.out.println(startDay.day);
+			System.out.println(endDay.day);
+			
+			if(startDay.day.after(endDay.day)){
+				JOptionPane.showMessageDialog(null,
+					    "Polls opening cannot occur after polls close.",
+					    "Check Polling Times",
+					    JOptionPane.WARNING_MESSAGE);
+			}else if(startDay.day.before(today)){
+				JOptionPane.showMessageDialog(null,
+					    "Cannot create an election in the past.",
+					    "Check Polling Times",
+					    JOptionPane.WARNING_MESSAGE);
+			}
+			else{
+			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			SimpleDateFormat sd = new SimpleDateFormat("mm");
 			
 			String electionName = txtElectionName.getText();
 			
 			int dialogResult = JOptionPane.showConfirmDialog(null, "The election's name is listed as "+electionName.toUpperCase()+", it is scheduled"
 					+ " to begin on " + sdf.format(startDay.day) + " and end on " + sdf.format(endDay.day) + "\n do you wish to continue?");
 			
-			
 			String commissionerID = txtCommissionerID.getText();
-			
-			
+				
 			if(dialogResult == JOptionPane.YES_OPTION)
 			{
 				election.addCommissioner(commissionerID, electionName);
@@ -140,6 +192,7 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 			}
 			else
 				System.out.println("Hmmm, well too bad!");
+		}
 		}
 	}
 	

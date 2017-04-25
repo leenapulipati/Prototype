@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
@@ -28,7 +29,7 @@ public class Login extends JFrame implements ActionListener{
 	String inputPassword;
 	User user;
 	JTextField usernameFLD;
-	JTextField passwordFLD;
+	JPasswordField passwordFLD;
 	JLabel tryAgain;
 	JLabel electionDown;
 
@@ -55,7 +56,7 @@ public class Login extends JFrame implements ActionListener{
 		
 		/**Login GUI Components**/
 		 usernameFLD = new JTextField("Rnkambara",20);
-		 passwordFLD = new JTextField("helloworld",20);
+		 passwordFLD = new JPasswordField("helloworld",20);
 		 
 		JLabel userLabel = new JLabel("Username: ");
 		JLabel passLabel = new JLabel("Password: ");

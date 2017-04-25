@@ -43,7 +43,7 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
 	vName.setVisible(false);
 	vName.setFont(new Font(vName.getFont().getName(), Font.BOLD, 15));
 	
-	JLabel disqualifyOptioins = new JLabel("Disqualify Optiosn");
+	JLabel disqualifyOptioins = new JLabel("Disqualify Options");
 	disqualifyOptioins.setFont(new Font(disqualifyOptioins.getFont().getName(), Font.BOLD, 15));
 
 	
@@ -87,7 +87,7 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
                     .addComponent(buttons))
         );
         
-	        //tells java what to do when the class object closes
+	    //tells java what to do when the class object closes
 		panelMain.setBackground(MyColors.deepBlue);
 		this.setSize(600,400);
 		this.setIconImage(MyImages.codeFather.getImage());
@@ -133,7 +133,7 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
 	        	   {
 		        	vName.setVisible(false);
 		    		String strIn= disqualifyVoter();
-		    		JOptionPane.showMessageDialog(this,strIn,"Confirmation",JOptionPane.PLAIN_MESSAGE);
+		    		JOptionPane.showMessageDialog(this,"Disqualified!","Confirmation",JOptionPane.PLAIN_MESSAGE);
 	        	   }
 	    	}
 		} 
