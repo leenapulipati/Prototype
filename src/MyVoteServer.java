@@ -119,6 +119,14 @@ public class MyVoteServer extends Thread  {
 		return election.certified;
 	}
 	
+	public ArrayList<String> getWriteInCandidates()
+	{
+		return election.votes.writeIns;		
+	}
+	
+	public  HashMap<String, Boolean> getWriteIns(){
+		return election.votes.raceVoteWriteIn;
+	}
 	/**@return boolean | true election is up | false no elections up | */
 	public boolean electionUp(){
 		return !elections.isEmpty();
@@ -139,22 +147,33 @@ public class MyVoteServer extends Thread  {
 	}
 	/**Takes in an eleciton and adds it to the server
 	 * @param e - the election to be added to the server*/
+	
+	public void saveWriteIn(String writeinCand)
+	{
+		if(!election.votes.writeIns.contains(writeinCand))
+			election.votes.writeIns.add(writeinCand);		
+	}
+	
 	public void addElection( Election e)
 	{
 		elections.put(e.election_title, e);
 		backup();
 	}
 	
+	public void addElectionCommissioner(ElectionCommissioner ec) {
+		users.put(ec.username, ec);
+	}
 	/**@param race
 	 * @param candidates
 	 * adds races to the HashMap which keeps track of votes
 	 * votes is a hashmap with key [race = {list of candidates}]
 	 * candidates has | candidate name | vote tallies |**/
-	public void addRace(RacePanel race, boolean mv) 
+	public void addRace(RacePanel race, boolean mv, boolean writein) 
 	{
 		System.out.println("selectedElection " + election);
 		election.votes.votes.put(race.race_title, race.candidates);
 		election.votes.raceVoteSelection.add(mv);
+		election.votes.raceVoteWriteIn.put(race.race_title, writein);
 		System.out.println(elections);
 		backup();
 	}
@@ -167,9 +186,16 @@ public class MyVoteServer extends Thread  {
 	 * @param ID        | ID genderated for voted user|
 	 *
 	 * NOTE >>> Backs up server with each vote (testing purposes)**/
-	public void addVote(String race, int selected, String votedUser, String ID)
+	public void addVote(String race, Candidate selected, String votedUser, String ID)
 	{
-		Candidate SelectedCandidate = election.votes.votes.get(race.trim()).get(selected);
+		int index = election.votes.votes.get(race.trim()).indexOf(selected);
+		System.out.println("Selected in add: " + selected);
+		if(index == -1){
+			election.votes.votes.get(race).add(selected);
+			index = election.votes.votes.get(race.trim()).indexOf(selected);
+			}
+		
+		Candidate SelectedCandidate = election.votes.votes.get(race.trim()).get(index);
 				  SelectedCandidate.incramentTally();
 		election.votes.votedUsers.put(votedUser, users.get(votedUser));
 		election.votes.IDStatistics.put(ID, users.get(votedUser).dataSet());
@@ -181,8 +207,8 @@ public class MyVoteServer extends Thread  {
 			List<Candidate> c = new ArrayList<Candidate>(); c.add(SelectedCandidate);
 			election.votes.voterIDs.put(ID, c);
 		}
-		System.out.println(election.votes.voterIDs);
-		System.out.println(election.votes.votes);
+		System.out.println("IDS: " + election.votes.voterIDs);
+		System.out.println("Votes: " + election.votes.votes);
 		backup();
 	}
 	
@@ -301,7 +327,4 @@ public class MyVoteServer extends Thread  {
 		restore();
 	}
 
-
-	
-	
 }

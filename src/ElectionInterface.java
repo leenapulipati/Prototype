@@ -116,7 +116,8 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		 * 									   | User is checked if voted                  |
 		 * 									   | User GUI brought up for selected Election |**/
 		
-		if(e.getActionCommand().equals("confirm") && !list.isSelectionEmpty()){
+		if(e.getActionCommand().equals("confirm") && !list.isSelectionEmpty())
+		{
 			String selectedE = list.getSelectedValue().toString();
 			Election selected = null;
 			
@@ -132,7 +133,7 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				
 				if(user instanceof ElectionCommissioner)
 				user.UserGUI(user);
-				
+				else
 				if(pollsEnded())
 				{
 					if(certified())

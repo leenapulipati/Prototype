@@ -270,6 +270,9 @@ public class HSOInterface extends JFrame implements ActionListener{
 		
 			bw.write("\nEC " + id + " " + random + " " + eTitle);
 			bw.flush();
+			
+			addEC(id, random, eTitle);
+			new API().serializeAPI();
 		} catch(IOException e){
 			e.printStackTrace();
 
@@ -314,7 +317,17 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 	}
 
-
+		public void addEC(String username, String password, String electionName){
+			try
+			{
+				pwOut.writeObject("<saveEC>");
+				pwOut.writeObject(new ElectionCommissioner(username, password, electionName));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
 	public void shutdown(){
 		try {
 			pwOut.writeObject("<shutdown>");

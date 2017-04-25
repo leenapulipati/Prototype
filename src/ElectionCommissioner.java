@@ -20,6 +20,7 @@ public class ElectionCommissioner extends User  implements java.io.Serializable 
 	}
 	
 	public void UserGUI(User user) {
+		System.out.println("Enter");
 		new BallotPrompt();
 	}
 

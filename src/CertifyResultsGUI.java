@@ -41,6 +41,10 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	   	JButton certify = new JButton("Certify");
 	   	certify.setActionCommand("certify");
 	   	certify.addActionListener(this);
+	   	
+	   	JButton returnB = new JButton("Return");
+	   	returnB.setActionCommand("return");
+	   	returnB.addActionListener(this);
 	   
 	    c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(9,10,9, 10);
@@ -66,6 +70,8 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 		
 	   	c.gridy = i+2;
 	   	resultsPanel.add(certify,c);
+		c.gridy = i+3;
+	   	resultsPanel.add(returnB,c);
 	   	resultsPanel.setBackground(Color.white);
 	   	resultsPanel.setBorder(new LineBorder(Color.black,4));
 	   	mainPanel.add(resultsPanel);
@@ -105,6 +111,10 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 			{	
 			this.setVisible(false);	
 			certifyElection();
+			}
+		if(e.getActionCommand().equals("return"))
+			{
+			this.setVisible(false);
 			}
 		}
 	 
@@ -160,6 +170,6 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	}
 	
 	public static void main(String[]args){
-
+		new CertifyResultsGUI();
 	}
 }

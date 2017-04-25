@@ -14,7 +14,8 @@ public class StudentBallot{
 	ArrayList<Boolean> mv;
 	boolean multivote = false;
 	HashMap<String, List<Candidate>> lp;
-	
+	HashMap<String, Boolean> writeIns;
+	 
 	/**Server Stuff**/
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
@@ -39,7 +40,7 @@ public class StudentBallot{
 		 for(int i = 0; i < races.length;i++)
 		 {
 	    	 RacePanel p = new RacePanel( races[i], winners[i]);
-			 b.addBallot(p, false, mv.get(i));
+			 b.addBallot(p, false, mv.get(i), writeIns.get(races[i]));
 		 }
 		 
 		 b.finishBallot(false);
@@ -54,6 +55,7 @@ public class StudentBallot{
 			pwOut.writeObject("<getVotes>");
 			lp = ( HashMap<String, List<Candidate>>)brIn.readObject();
 			mv = (ArrayList<Boolean>) brIn.readObject(); 
+			writeIns = ( HashMap<String, Boolean>)  brIn.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

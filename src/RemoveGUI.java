@@ -31,7 +31,8 @@ public class RemoveGUI extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	ArrayList<String> APIList = new ArrayList<String>();
-
+	CurrentElection currentElection;
+	
 	JPanel panelMain = new JPanel();
 	GroupLayout layout = new GroupLayout(panelMain);
 	JPanel pnlNewComm = new JPanel();
@@ -47,8 +48,9 @@ public class RemoveGUI extends JFrame implements ActionListener{
 	Socket sock;
 
 
-	RemoveGUI(){
+	RemoveGUI(CurrentElection currentElection){
 		startServer();
+		this.currentElection = currentElection;
 
 		lcurrent = new JLabel("Current Election Commissioner ID");
 		lnewComm = new JLabel("Replacement Election Commissioner ID");
@@ -106,9 +108,9 @@ public class RemoveGUI extends JFrame implements ActionListener{
 
 
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("finish")){
-			this.setVisible(false);
+		if(e.getActionCommand().equals("finish")){			
 			replaceAPI();
+			this.setVisible(false);
 			try {
 				copyAPI();
 			} catch (IOException e1) {
@@ -176,7 +178,11 @@ public class RemoveGUI extends JFrame implements ActionListener{
 			}
 
 			bw.write("\nEC " + newCommissioner + " " + random + " " + currentElection);
-			bw.flush();
+			
+			/**Reset Current Election Commissioner and API**/
+			this.currentElection.replaceCommissioner(newCommissioner);
+			addEC(newCommissioner, random, currentElection);
+			new API().serializeAPI();
 			
 			fw2 = new FileWriter(file2.getAbsoluteFile(), true);
 			bw2 = new BufferedWriter(fw2);
@@ -189,6 +195,9 @@ public class RemoveGUI extends JFrame implements ActionListener{
 					bw.write(user[i] + " ");
 				}
 				bw.write("\r\n"); 		//windows carriage return
+				
+				bw.flush();
+
 			}
 			}
 			else
@@ -214,7 +223,16 @@ public class RemoveGUI extends JFrame implements ActionListener{
 		}
 		
 	}
-
+	public void addEC(String username, String password, String electionName){
+		try
+		{
+			pwOut.writeObject("<saveEC>");
+			pwOut.writeObject(new ElectionCommissioner(username, password, electionName));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	public void shutdown(){
 		try {
 			pwOut.writeObject("<remove>");

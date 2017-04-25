@@ -34,9 +34,10 @@ public class API {
 			
 			String[] user = apiReader.nextLine().split(" ");
 			
-			if(user[0].equals("EC"))
+			if(user[0].equals("EC")){
 				MyVoteServer.users.put(user[1], new ElectionCommissioner(user[1], user[2],user[3]));
 			
+			}
 			else if(user[0].equals("HSO"))
 				MyVoteServer.users.put(user[1], new HSO(user[1], user[2]));
 			else if(user.length < 7){

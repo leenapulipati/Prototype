@@ -1,10 +1,11 @@
 EC Rnkambara helloworld f Sophmore ComputerScience/ComputerEngineering Statler 
 Jjkambara hellokitty f Freshman English/History Eberly 
 Dapatrick jessica m Freshman English Everly 
-EC someone IUtag6FSTU GraduateHSO lepulipati password1 f Graduate ComputerScience Statler 
+Adentrekin rebekahk m Graduate ComputerScience Statler 
+talvarez password0 f Sophmore ComputerScience Statler 
+HSO lepulipati password1 f Graduate ComputerScience Statler 
 cahines password2 f Senior ComputerScience/ComputerEngineering Statler 
 zdelilo password3 f Junior ComputerScience Statler 
-jiblake password4 f Sophmore ComputerScience Statler 
-EC rebekah NNrSzjgG22 random 
-EC  gLrOfsaTgv openLater 
-EC  ezRGWncw3C closeAlready 
+jiblake password4 m Sophmore ComputerScience Statler 
+EC fresh ZDh6LavMA6 random 
+EC Thomas 4RvbqfyHr8 writein

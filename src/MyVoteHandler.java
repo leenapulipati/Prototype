@@ -46,7 +46,7 @@ public class MyVoteHandler extends Thread {
 			
 			case "<vote>":
 				String race = (String)brIn.readObject();
-				int selected = (int)brIn.readObject();
+				Candidate selected = (Candidate)brIn.readObject();
 				String votedUser = (String)brIn.readObject();
 				String ID = (String)brIn.readObject();
 				server.addVote(race, selected, votedUser, ID);
@@ -55,7 +55,13 @@ public class MyVoteHandler extends Thread {
 			case "<addRace>":
 				 RacePanel races =  (RacePanel) brIn.readObject();
 				 boolean multivote = (boolean) brIn.readObject();
-				server.addRace(races, multivote);
+				 boolean writein = (boolean) brIn.readObject();
+				server.addRace(races, multivote, writein);
+			break;
+			
+			case "<saveWriteIn>":
+				String writeinCand = (String) brIn.readObject();
+				server.saveWriteIn(writeinCand);
 			break;
 			
 			case "<shutdown>":
@@ -74,9 +80,18 @@ public class MyVoteHandler extends Thread {
 				
 			break;
 			
+			case "<getWriteInCandidates>":
+				  pwOut.writeObject(server.getWriteInCandidates());
+			break;
+			
+			case "<getWriteIns>":
+				pwOut.writeObject(server.getWriteIns());
+			break;
+			
 			case "<getVotes>":
 				pwOut.writeObject(server.getVotes());
 				pwOut.writeObject(server.getMultiVoteSelections());
+				pwOut.writeObject(server.getWriteIns());
 			break;
 			
 			case "<getRecount>":
@@ -104,6 +119,12 @@ public class MyVoteHandler extends Thread {
 			case"<electionUp>":
 				pwOut.writeObject(server.electionUp());
 			break;
+			
+			case "<saveEC>":
+				ElectionCommissioner ec = (ElectionCommissioner)brIn.readObject();
+				server.addElectionCommissioner(ec);	
+			break;
+			
 			case "<addElection>":
 			Election e = (Election)brIn.readObject();
 			server.addElection(e);

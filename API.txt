@@ -7,6 +7,15 @@ HSO lepulipati password1 f Graduate ComputerScience Statler
 cahines password2 f Senior ComputerScience/ComputerEngineering Statler 
 zdelilo password3 f Junior ComputerScience Statler 
 jiblake password4 m Sophmore ComputerScience Statler 
-EC  YRgsZkvoN1 random
-EC someone XgoQiiX4yc someone
-EC someone oG6RpbRZ4e random
+EC fresh ZDh6LavMA6 random 
+EC Thomas 4RvbqfyHr8 writein
+EC Brandy E22edAQxBl Tester
+EC Williams 79OFbflEuz Tester
+EC Popcorn SoXmyZecuU Candies
+EC cotton TjMW5SVfVu candy
+EC multiple CKuoL6muYT multipleselc
+EC candy UCQzwVJEzf multiplesel
+EC writein SbTiBmoZ83 writeIn
+EC  TIKVaiTOSa beforewriteIn
+EC  CgNQV2eCBk writein
+EC  rHvThQFq8z writeInAfter

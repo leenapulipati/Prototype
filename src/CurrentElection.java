@@ -120,7 +120,7 @@ public class CurrentElection extends JFrame implements ActionListener{
 			new DisqualifyGUI();
 		}
 		else if(e.getActionCommand().equals("Remove")){
-			new RemoveGUI();	
+			new RemoveGUI(this);	
 		}
 		if(e.getActionCommand().equals("back")){
 			election.setVisible(true);
@@ -134,5 +134,8 @@ public class CurrentElection extends JFrame implements ActionListener{
 		
 	}
 	
+	public void replaceCommissioner(String name){
+		lblCommissionerID.setText(name);
+	}
 
 }

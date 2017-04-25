@@ -49,6 +49,26 @@ public class Candidate implements java.io.Serializable {
    		return winners;
 	}
 	
+	@Override
+	public boolean equals(Object o)
+	{
+		if(o instanceof Candidate)
+		{
+			if (o != null)
+			{
+			String toCompare = ((Candidate)o).name;
+			return toCompare.equals(name);
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() 
+	{
+	    return name.hashCode();
+	}
+	
 	/**
 	 * Helper method for retrieving candidates from a list of candidates
 	 * @param candidates | list of candidates to be searched |

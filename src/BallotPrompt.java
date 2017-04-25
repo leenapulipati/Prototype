@@ -33,6 +33,9 @@ public class BallotPrompt extends JFrame implements ActionListener {
 	JButton confirm;
 	JButton finish;
 	Ballot b = new Ballot(null);
+	
+	JLabel writeinStatus;
+	JCheckBox writein ;
     
 	/**Creates interface for inputting ballot
 	 *|Takes in title of race
@@ -55,6 +58,10 @@ public class BallotPrompt extends JFrame implements ActionListener {
         finish = new JButton("Finish");
         finish.setActionCommand("finish");
         finish.addActionListener(this);
+        
+        writein = new JCheckBox("Add Write in for this election");
+        writein.setActionCommand("selected");
+        writein.addActionListener(this);
         
         /**Set Defaults for main panel | allows enter key | top bar icon**/
         this.getRootPane().setDefaultButton(confirm);
@@ -99,6 +106,7 @@ public class BallotPrompt extends JFrame implements ActionListener {
   					  .addComponent(racePanel)
   					  .addComponent(canPanel)
   					  .addComponent(subPanel)
+  					  .addComponent(writein)
   					  .addComponent(confirm)
   					  .addComponent(finish)
   					  ));
@@ -109,6 +117,7 @@ public class BallotPrompt extends JFrame implements ActionListener {
   					  .addComponent(canPanel)
   					  .addComponent(subPanel)
   					  .addComponent(confirm)
+  					  .addComponent(writein)
   					  .addComponent(finish)
  	                   );
 	 	     
@@ -127,15 +136,16 @@ public class BallotPrompt extends JFrame implements ActionListener {
      **/
     public void actionPerformed(ActionEvent e){
    
-    	if(e.getActionCommand().equals("confirm")){
+    	if(e.getActionCommand().equals("confirm"))
+    	{
     		String[] candArray = candidates.getText().split(",");
     		
     		List<Candidate> c = Candidate.createCandidates(candArray, race.getText());
     		
     		JPanel temp = new JPanel();
-    		p = new RacePanel(temp, race.getText(), c);
     		
-    		b.addBallot(p, true, multivote.isSelected());
+    		p = new RacePanel(temp, race.getText(), c);
+    		b.addBallot(p, true, multivote.isSelected(), writein.isSelected());
     	}
     	if(e.getActionCommand().equals("finish")) 
     	{
